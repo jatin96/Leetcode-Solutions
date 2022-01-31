@@ -16,7 +16,7 @@ class Solution {
                 if (lowestTime[v] > insertionTime[u])
                     res.add(Arrays.asList(u, v));
             } else {
-                lowestTime[u] = Math.min(lowestTime[u], insertionTime[v]);
+                lowestTime[u] = Math.min(lowestTime[u], lowestTime[v]);
             }
         }
     }
