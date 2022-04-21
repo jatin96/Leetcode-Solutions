@@ -3,28 +3,21 @@ public:
     int findMinArrowShots(vector<vector<int>>& points) {
         sort(points.begin(), points.end());
         
-        for (int i = 0; i < points.size(); i++){
-            cout << points[i][0] << " " << points[i][1] << endl;
-        }
-        int cnt = 0, high = 0, low = 0;
-        for (int i = 0; i < points.size(); i++) {
-            if (i == 0) {
-                low = points[i][0];
-                high = points[i][1];
-                cnt = 1;
-                continue;
-            }
+        int low = points[0][0], high = points[0][1], res = 1, n = points.size();
+        for (int i = 1; i < n; i++) {
+            int xstart = points[i][0];
+            int xend = points[i][1];
             
-            if (points[i][0] > high) {
-                cnt++;
-                high = points[i][1];
-                low = points[i][0];
+            if (xstart >= low && xstart <= high) {
+                low = max(xstart, low);
+                high = min(xend, high);
             } else {
-                low = max(low, points[i][0]);
-                high = min(high, points[i][1]);
+                low = xstart;
+                high = xend;
+                res++;
             }
         }
         
-        return cnt;
+        return res;
     }
 };
