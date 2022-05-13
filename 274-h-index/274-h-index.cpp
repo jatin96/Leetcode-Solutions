@@ -2,13 +2,17 @@ class Solution {
 public:
     bool predicate(int expectedH, vector<int>& citations, int n) {
         
-        int cnt = 0;
+        int more = 0, less = 0, same = 0;
         for (int citation : citations) {
-            if(citation >= expectedH)
-                cnt++;
+            if (citation == expectedH) same++;
+            else if (citation > expectedH) more++;
+            else less++;
         }
         
-        if (cnt >= expectedH) return true;
+        if (more == expectedH) return true;
+        
+        if (more + same >= expectedH) return true;
+        
         return false;
     }
     int hIndex(vector<int>& citations) {
