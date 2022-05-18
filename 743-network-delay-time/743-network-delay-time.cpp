@@ -5,6 +5,7 @@ public:
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
         priority_queue<pi, vector<pi>, greater<pi>> pq;
         vector<pi> graph[107];
+        vector<bool> vis(n, false);
         
         for (int i = 0; i < times.size(); i++) {
             int u = times[i][0];
@@ -28,14 +29,16 @@ public:
             int node = pq.top().second;
             pq.pop();
             
-            if (dist[node] < weight) continue;
+            if (vis[node]) continue;
             
             for (auto [child, w] : graph[node]) {
-                if (dist[node] + w < dist[child]) {
+                if (vis[child] == false && dist[node] + w < dist[child]) {
                     dist[child] = dist[node] + w;
                     pq.push({dist[child], child});
                 }
             }
+            
+            vis[node] = true;
         }
         
         int maxi = -1;
