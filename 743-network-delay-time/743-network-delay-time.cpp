@@ -1,26 +1,48 @@
 class Solution {
 public:
-    const int INF = 100000000;
+    typedef pair<int, int> pi;
+    int INF = 10000007;
     int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-        vector<int> dist(n + 1, INF);
+        priority_queue<pi, vector<pi>, greater<pi>> pq;
+        vector<pi> graph[107];
         
+        for (int i = 0; i < times.size(); i++) {
+            int u = times[i][0];
+            int v = times[i][1];
+            int w = times[i][2];
+            
+            graph[u].push_back({v, w});
+        }
+        
+        int dist[107];
+        
+        for (int i = 0; i <= n; i++)
+            dist[i] = INF;
+        
+        
+        pq.push({0, k});
         dist[k] = 0;
-        for (int i = 1; i <= n - 1; i++) {
-            for (auto &time : times) {
-                int u = time[0];
-                int v = time[1];
-                int w = time[2];
-                
-                if (dist[u] != INF)
-                    dist[v] = min(dist[v], dist[u] + w);
+        
+        while (!pq.empty()) {
+            int weight = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+            
+            if (dist[node] < weight) continue;
+            
+            for (auto [child, w] : graph[node]) {
+                if (dist[node] + w < dist[child]) {
+                    dist[child] = dist[node] + w;
+                    pq.push({dist[child], child});
+                }
             }
         }
         
-        int res = -1;
+        int maxi = -1;
         for (int i = 1; i <= n; i++) {
-            res = max(res, dist[i]);
+            maxi = max(maxi, dist[i]);
         }
         
-        return (res == INF ? -1 : res);
+        return maxi >= INF ? -1 :maxi;
     }
 };
