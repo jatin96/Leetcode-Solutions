@@ -11,9 +11,6 @@ private:
             return true;
         }
         
-        if(grid[x][y] > cost)
-            return false;
-        
         used[x][y] = true;
         bool flag = false;
         for(int i = 0; i < 4; i++) {
@@ -44,7 +41,7 @@ public:
                     used[i][j] = false;
             }
             
-            if(possible(0, 0, n, mid, grid, used)) {
+            if(grid[0][0] <= mid && possible(0, 0, n, mid, grid, used)) {
                 ans = mid;
                 high = mid - 1;
             } else {
