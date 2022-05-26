@@ -1,48 +1,58 @@
 class Solution {
-    typedef pair<int, pair<int , int >> pii;
-    int INF = 10000000;
-    int dx[4] = {0, 1, 0, -1};
-    int dy[4] = {-1, 0, 1, 0};
-public:
-    bool isValid(int x, int y, int n) {
-        return (x >= 0 && x < n && y>= 0 && y < n);
+private:
+    int dir[4][2] = {{1,0}, {-1,0}, {0,1}, {0,-1}};
+    
+    bool valid(int x, int y, int n) {
+        return x >= 0 && x < n && y >= 0 && y < n;
     }
     
+    bool possible(int x, int y, int n, int cost, vector<vector<int>>& grid, vector<vector<bool>>& used) {
+        if(x == n-1 && y == n-1) {
+            return true;
+        }
+        
+        if(grid[x][y] > cost)
+            return false;
+        
+        used[x][y] = true;
+        bool flag = false;
+        for(int i = 0; i < 4; i++) {
+            int a = x + dir[i][0];
+            int b = y + dir[i][1];
+            if(valid(a, b, n) && !used[a][b] && grid[a][b] <= cost)
+                if (possible(a, b, n, cost, grid, used))
+                    return true;
+        }
+        
+        return false;
+    }
+    
+public:
     int swimInWater(vector<vector<int>>& grid) {
-        priority_queue<pii, vector<pii>, greater<pii>> priorityQueue;
+        int ans = -1;
+        int n  = grid.size();
         
-        int n = grid.size();
-        
-        int leastTime[50][50];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                leastTime[i][j] = INF;
+        vector<vector<bool>> used(n, vector<bool>(n, false));
         
         
-        priorityQueue.push({0, {0, 0}});
-        leastTime[0][0] = 0;
-        
-        while (!priorityQueue.empty()) {
-            int x = priorityQueue.top().second.first;
-            int y = priorityQueue.top().second.second;
-            int currLeastTime = priorityQueue.top().first;
-            priorityQueue.pop();
+        int low = 0, high = n*n; 
+        while(low <= high) {
+            int mid = (low + high) / 2;
             
-            if (leastTime[x][y] < currLeastTime) continue;
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < n; j++)
+                    used[i][j] = false;
+            }
             
-            for (int i = 0; i < 4; i++) {
-                int x1 = x + dx[i];
-                int y1 = y + dy[i];
-                if (isValid(x1, y1, n)) {
-                    int timeDiff = max(grid[x][y], grid[x1][y1]);
-                    if (max(leastTime[x][y], timeDiff) < leastTime[x1][y1]) {
-                        priorityQueue.push({max(leastTime[x][y], timeDiff), {x1, y1}});
-                        leastTime[x1][y1] = max(leastTime[x][y], timeDiff);
-                    }
-                }
+            if(possible(0, 0, n, mid, grid, used)) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
             }
         }
         
-        return leastTime[n - 1][n - 1]; 
+        
+        return ans;
     }
 };
