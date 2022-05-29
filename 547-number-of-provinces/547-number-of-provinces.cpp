@@ -23,7 +23,8 @@ public:
     int findNoOfClusters() {
         unordered_set<int> clusters;
         for (int i = 0; i < parent.size(); i++) {
-            clusters.insert(find(parent[i]));
+            if (parent[i] == i)
+            clusters.insert(i);
             cout << i << " parent is " << parent[i] << endl;
         }
         
